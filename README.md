@@ -10,25 +10,28 @@ DROP TABLE IF EXISTS Bill_Snack, CashPayment, CardPayment, Payment, Booking,
                      Ticket, Movie, Employee, Customer, CinemaUser;
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Create tables with explicit InnoDB engine
+-- Start transaction to ensure consistency
+START TRANSACTION;
+
+-- Create tables with explicit InnoDB engine and case-insensitive collation
 CREATE TABLE `CinemaUser` (
     `username` VARCHAR(100) PRIMARY KEY,
     `password` VARCHAR(100)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `Customer` (
     `customerID` INT PRIMARY KEY,
     `username` VARCHAR(100),
     CONSTRAINT `fk_customer_user` 
     FOREIGN KEY (`username`) REFERENCES `CinemaUser`(`username`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `Employee` (
     `employeeID` INT PRIMARY KEY,
     `username` VARCHAR(100),
     CONSTRAINT `fk_employee_user`
     FOREIGN KEY (`username`) REFERENCES `CinemaUser`(`username`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `Movie` (
     `movieID` INT PRIMARY KEY,
@@ -93,7 +96,7 @@ CREATE TABLE `Bill_Snack` (
 ) ENGINE=InnoDB;
 
 -- Insert data in the correct order
--- First, insert into CinemaUser table
+-- First, insert into CinemaUser table and verify
 INSERT INTO `CinemaUser` (`username`, `password`) VALUES
 ('Fatima', 'fatma123'),
 ('Salem', 'salem456'),
@@ -104,6 +107,9 @@ INSERT INTO `CinemaUser` (`username`, `password`) VALUES
 ('Mona', 'mona888'),
 ('Yousef', 'yousef999');
 
+-- Verify CinemaUser data was inserted correctly
+SELECT * FROM `CinemaUser`;
+
 -- Then insert into Customer table
 INSERT INTO `Customer` (`customerID`, `username`) VALUES
 (1, 'Fatima'),
@@ -113,10 +119,12 @@ INSERT INTO `Customer` (`customerID`, `username`) VALUES
 (5, 'Saeed'),
 (6, 'Mona');
 
+-- Insert into Employee table with exact case matching
 INSERT INTO `Employee` (`employeeID`, `username`) VALUES
 (1001, 'Salem'),
 (1002, 'Yousef');
 
+-- Insert remaining data
 INSERT INTO `Movie` (`movieID`, `title`, `genre`, `rate`) VALUES
 (101, 'Al-Feel Al-Azraq', 'Horror', 8.2),
 (102, 'Torab Al-Mas', 'Crime', 7.8),
@@ -169,3 +177,6 @@ INSERT INTO `Bill_Snack` (`Bill_Id`, `snackID`) VALUES
 (5, 6),
 (6, 1),
 (6, 3);
+
+-- Commit the transaction
+COMMIT;
