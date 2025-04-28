@@ -5,25 +5,25 @@ USE cinema_db;
 DROP TABLE IF EXISTS Bill_Snack, CashPayment, CardPayment, Payment, Booking, 
                      PreOrderSnack, Snack, SeasonalDiscount, Discount, 
                      NowShowingMovie, UpcomingMovie, Review, CustomerReview, 
-                     Ticket, Movie, Employee, Customer, User;
+                     Ticket, Movie, Employee, Customer, CinemaUser;
 
--- Create User table first (parent table)
-CREATE TABLE User (
+-- Create CinemaUser table instead of User (avoiding reserved keyword)
+CREATE TABLE CinemaUser (
     username VARCHAR(100) PRIMARY KEY,
     password VARCHAR(100)
 );
 
--- Create Customer table with foreign key to User
+-- Create Customer table with foreign key to CinemaUser
 CREATE TABLE Customer (
     customerID INT PRIMARY KEY,
     username VARCHAR(100),
-    FOREIGN KEY (username) REFERENCES User(username)
+    FOREIGN KEY (username) REFERENCES CinemaUser(username)
 );
 
 CREATE TABLE Employee (
     employeeID INT PRIMARY KEY,
     username VARCHAR(100),
-    FOREIGN KEY (username) REFERENCES User(username)
+    FOREIGN KEY (username) REFERENCES CinemaUser(username)
 );
 
 CREATE TABLE Movie (
@@ -141,8 +141,8 @@ CREATE TABLE Bill_Snack (
 );
 
 -- Insert data in the correct order (parent tables first)
--- First, insert into User table
-INSERT INTO User (username, password) VALUES
+-- First, insert into CinemaUser table
+INSERT INTO CinemaUser (username, password) VALUES
 ('Fatima', 'fatma123'),
 ('Salem', 'salem456'),
 ('Ahmed', 'ahmed789'),
