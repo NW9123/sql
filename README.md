@@ -1,13 +1,19 @@
 CREATE DATABASE IF NOT EXISTS cinema_db;
 USE cinema_db;
 
-DROP TABLE IF EXISTS Bill_Snack, Apply_Discount, Review, CashPayment, CardPayment, Payment, Booking, Ticket, Snack, PreOrderSnack, SeasonalDiscount, Discount, NowShowingMovie, UpcomingMovie, Movie, Employee, Customer, User, CustomerReview;
+-- Drop tables in reverse order of dependencies
+DROP TABLE IF EXISTS Bill_Snack, CashPayment, CardPayment, Payment, Booking, 
+                     PreOrderSnack, Snack, SeasonalDiscount, Discount, 
+                     NowShowingMovie, UpcomingMovie, Review, CustomerReview, 
+                     Ticket, Movie, Employee, Customer, User;
 
+-- Create User table first (parent table)
 CREATE TABLE User (
     username VARCHAR(100) PRIMARY KEY,
     password VARCHAR(100)
 );
 
+-- Create Customer table with foreign key to User
 CREATE TABLE Customer (
     customerID INT PRIMARY KEY,
     username VARCHAR(100),
@@ -134,7 +140,8 @@ CREATE TABLE Bill_Snack (
     FOREIGN KEY (snackID) REFERENCES Snack(snackID)
 );
 
--- Insert sample data with corrected column names
+-- Insert data in the correct order (parent tables first)
+-- First, insert into User table
 INSERT INTO User (username, password) VALUES
 ('Fatima', 'fatma123'),
 ('Salem', 'salem456'),
@@ -145,6 +152,7 @@ INSERT INTO User (username, password) VALUES
 ('Mona', 'mona888'),
 ('Yousef', 'yousef999');
 
+-- Then insert into Customer table
 INSERT INTO Customer (customerID, username) VALUES
 (1, 'Fatima'),
 (2, 'Ahmed'),
